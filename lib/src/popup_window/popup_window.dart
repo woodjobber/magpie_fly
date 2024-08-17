@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class PopupWindow extends StatefulWidget {
   static void showPopWindow(context, GlobalKey popKey,
       [PopDirection popDirection = PopDirection.bottom,
-      Widget popWidget,
+      Widget? popWidget,
       double offset = 0]) {
+    if (popWidget == null) return;
     Navigator.push(
         context,
         PopRoute(
@@ -17,17 +18,18 @@ class PopupWindow extends StatefulWidget {
         )));
   }
 
-  Widget window;
+  Widget? window;
   GlobalKey popKey;
   PopDirection popDirection;
   Widget popWidget; //自定义widget
   double offset; //popupWindow偏移量
 
-  PopupWindow(
-      {this.popWidget,
-      this.popKey,
-      this.popDirection = PopDirection.bottom,
-      this.offset});
+  PopupWindow({
+    required this.popWidget,
+    required this.popKey,
+    this.popDirection = PopDirection.bottom,
+    this.offset = 0,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -36,7 +38,7 @@ class PopupWindow extends StatefulWidget {
 }
 
 class _PopupWindowState extends State<PopupWindow> {
-  GlobalKey buttonKey;
+  late GlobalKey buttonKey;
   double left = -100;
   double top = -100;
 
@@ -45,12 +47,14 @@ class _PopupWindowState extends State<PopupWindow> {
     super.initState();
     buttonKey = GlobalKey();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RenderBox renderBox = widget.popKey.currentContext.findRenderObject();
+      RenderBox renderBox =
+          widget.popKey.currentContext!.findRenderObject()! as RenderBox;
       Offset localToGlobal =
           renderBox.localToGlobal(Offset.zero); //targetWidget的坐标位置
       Size size = renderBox.size; //targetWidget的size
 
-      RenderBox buttonBox = buttonKey.currentContext.findRenderObject();
+      RenderBox buttonBox =
+          buttonKey.currentContext!.findRenderObject() as RenderBox;
       var buttonSize = buttonBox.size; //button的size
       switch (widget.popDirection) {
         case PopDirection.left:
@@ -123,16 +127,16 @@ class PopRoute extends PopupRoute {
   final Duration _duration = Duration(milliseconds: 200);
   Widget child;
 
-  PopRoute({@required this.child});
+  PopRoute({required this.child});
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
   bool get barrierDismissible => true;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,

@@ -5,8 +5,8 @@ import '../util/syntax_highlighter.dart';
 //代码和组件的组合控件
 
 class CodeComponent extends StatefulWidget {
-  final Widget component;
-  final String codePath;
+  final Widget? component;
+  final String? codePath;
 
   CodeComponent({this.component, this.codePath});
 
@@ -23,10 +23,10 @@ class _CodeComponentState extends State<CodeComponent> {
   @override
   void initState() {
     super.initState();
-    if (widget.codePath != null && widget.codePath.length > 0) {
+    if (widget.codePath != null && widget.codePath!.length > 0) {
       readCodeFile().then((code) {
         setState(() {
-          _code = code ?? '';
+          _code = code;
         });
       });
     }
@@ -34,7 +34,7 @@ class _CodeComponentState extends State<CodeComponent> {
 
   Future<String> readCodeFile() async {
     try {
-      var a = await rootBundle.loadString(widget.codePath);
+      var a = await rootBundle.loadString(widget.codePath ?? '');
       return a;
     } catch (e) {
       print(e.toString());
@@ -46,7 +46,7 @@ class _CodeComponentState extends State<CodeComponent> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        widget.component==null?Text('') : widget.component,
+        widget.component == null ? Text('') : widget.component!,
         _code.length == 0 ? Text('') : _handleButttons(),
         _code.length == 0
             ? Text('')
@@ -82,7 +82,7 @@ class _CodeComponentState extends State<CodeComponent> {
           icon: Icon(Icons.content_copy),
           onPressed: () {
             Clipboard.setData(new ClipboardData(text: _code));
-            Scaffold.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('已复制到剪切板'),
               duration: Duration(milliseconds: 2000),
               backgroundColor: Colors.grey,

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class DraggableBtn extends StatefulWidget {
   final Widget child;
-  final Offset initOffset;
+  final Offset? initOffset;
   final Offset fullScreenOffset;
 
   const DraggableBtn(
-      {Key key,
-      @required this.child,
+      {Key? key,
+      required this.child,
       this.initOffset,
       this.fullScreenOffset = Offset.zero})
       : super(key: key);
@@ -28,12 +28,12 @@ class _DraggableBtnState extends State<DraggableBtn>
 
   @override
   void initState() {
-    _left = widget.initOffset.dx;
-    _top = widget.initOffset.dy;
+    _left = widget.initOffset?.dx ?? 0;
+    _top = widget.initOffset?.dy ?? 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RenderBox renderBox = globalKey.currentContext.findRenderObject();
-      childWidth = renderBox.size.width;
-      childHeight = renderBox.size.height;
+      RenderObject? renderBox = globalKey.currentContext?.findRenderObject();
+      childWidth = renderBox?.semanticBounds.width ?? 0;
+      childHeight = renderBox?.semanticBounds.height ?? 0;
     });
     _animController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));

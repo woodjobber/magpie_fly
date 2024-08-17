@@ -6,7 +6,7 @@ import 'code_component.dart';
 import 'widget_demo.dart';
 
 class MarkdownPage extends StatefulWidget {
-  MarkdownPage({@required this.filePath});
+  MarkdownPage({required this.filePath});
 
   final String filePath;
 
@@ -24,7 +24,7 @@ class _MarkdownPageState extends State<MarkdownPage> {
   void initState() {
     super.initState();
     parseMarkdown(widget.filePath).then((List list) {
-      if (list == null) {
+      if (list.isEmpty) {
         _loadMarkdownError = true;
       } else {
         _loadMarkdownError = false;
@@ -32,10 +32,10 @@ class _MarkdownPageState extends State<MarkdownPage> {
           if (item is String) {
             _contentList.add(item);
           } else if (item is Model && markdownPathToWidget[item.demo] != null) {
-            if(!item.isJump){
+            if (!item.isJump) {
               Widget wid = parseContentWidget(item);
               _contentList.add(wid);
-            }else{
+            } else {
               _contentList.add(EffectPlaceHolder(model: item));
             }
           }
@@ -47,8 +47,9 @@ class _MarkdownPageState extends State<MarkdownPage> {
 
   Widget parseContentWidget(Model model) {
     try {
-      Widget w = markdownPathToWidget[model.demo]();
-      return CodeComponent(component: w, codePath: (model.code!=null&&model.code==true)?model.demo:null);
+      Widget w = markdownPathToWidget[model.demo]!();
+      return CodeComponent(
+          component: w, codePath: (model.code == true) ? model.demo : null);
     } catch (e) {
       print('parseContentWidget : ${e.toString()}');
     }
@@ -58,7 +59,9 @@ class _MarkdownPageState extends State<MarkdownPage> {
   @override
   Widget build(BuildContext context) {
     return WidgetDemo(
-      contentList: _loadMarkdownError?[Text('请在pubspec.yaml中配置assets \n${widget.filePath}')]:_contentList,
+      contentList: _loadMarkdownError
+          ? [Text('请在pubspec.yaml中配置assets \n${widget.filePath}')]
+          : _contentList,
     );
   }
 }

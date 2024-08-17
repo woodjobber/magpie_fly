@@ -6,7 +6,7 @@ class MarkDownDoc extends StatelessWidget {
   final String mdPath;
   final String title;
 
-  const MarkDownDoc({Key key, @required this.mdPath, this.title})
+  const MarkDownDoc({Key? key, required this.mdPath, this.title = ''})
       : super(key: key);
 
   @override
@@ -17,11 +17,11 @@ class MarkDownDoc extends StatelessWidget {
         if (data.hasData) {
           return Scaffold(
             body: Markdown(
-              data: data.data,
-              onTapLink: (href) {
+              data: data.data ?? '',
+              onTapLink: (href, _, __) {
                 _handleHref(context, href);
               },
-              imageBuilder: (Uri uri){
+              imageBuilder: (Uri uri, _, __) {
                 print(uri.path);
                 try {
                   return Image.asset('doc/${uri.path}');
@@ -30,7 +30,7 @@ class MarkDownDoc extends StatelessWidget {
                 }
               },
             ),
-            appBar: title != null
+            appBar: title.isNotEmpty
                 ? AppBar(
                     title: Text(title),
                   )
@@ -52,9 +52,9 @@ class MarkDownDoc extends StatelessWidget {
     debugPrint(" ${href}");
     //其他跳转，可根据href区分title
     var title = "markdown";
-    if(href.contains("how_to_add_compone")){
+    if (href.contains("how_to_add_compone")) {
       title = "how to add compone";
-    }else if(href.contains("magpie_ui")){
+    } else if (href.contains("magpie_ui")) {
       title = "使用文档";
     }
     Navigator.push(

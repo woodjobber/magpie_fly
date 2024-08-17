@@ -49,17 +49,15 @@ class ScrollDetectListener extends StatelessWidget {
   final _ScrollNotification _notification;
 
   ScrollDetectListener({
-    Key key,
-    @required Widget child,
-    @required VisibleCallback onVisible,
+    Key? key,
+    required Widget child,
+    required VisibleCallback onVisible,
     int extentSize = 10,
     double percentIn = 0.8,
     int offset = 0,
     bool detect = true,
-    NotificationListenerCallback onNotification,
-  })  : assert(child != null),
-        assert(onVisible != null),
-        assert(percentIn > 0 && percentIn <= 1, 'percent should be (0,1]'),
+    NotificationListenerCallback? onNotification,
+  })  : assert(percentIn > 0 && percentIn <= 1, 'percent should be (0,1]'),
         assert(offset > 0, 'offset should >0'),
         _notification = _ScrollNotification(
           config: Config(
@@ -88,23 +86,26 @@ typedef VisibleCallback = void Function(List data, VideoPlayModel model);
 /// Supported configuration
 class Config {
   final Predicate predicate;
-  final VisibleCallback callback;
+  final VisibleCallback? callback;
   final int extentSize;
-  final bool detect;
+  final bool? detect;
+
   /// when the view is "visible" on screen
   final double percentIn;
+
   /// take care of AppBar height if exists
   final int offset;
+
   /// [onNotification] for [NotificationListener]
-  final NotificationListenerCallback onNotification;
+  final NotificationListenerCallback? onNotification;
 
   Config({
-    this.predicate,
+    required this.predicate,
     this.callback,
-    this.extentSize,
+    this.extentSize = 0,
     this.detect,
-    this.percentIn,
-    this.offset,
+    this.percentIn = 0,
+    this.offset = 0,
     this.onNotification,
   });
 }
@@ -113,23 +114,23 @@ class _ScrollNotification extends StatelessWidget {
   final Widget _child;
   final Config _config;
 
-  _ScrollNotification({Config config, Widget child})
+  _ScrollNotification({required Config config, required Widget child})
       : _config = config,
         _child = child;
 
   @override
   Widget build(BuildContext context) {
-    if (_config.detect) {
+    if (_config.detect ?? false) {
       Future.delayed(Duration(milliseconds: 200), () {
         _internalHit(context, _config);
-      }).catchError((_) => {});
+      }).catchError((_) {});
     }
     return NotificationListener(
       child: _child,
       onNotification: (n) {
         if (!(n is ScrollEndNotification)) {
           return _config.onNotification != null
-              ? _config.onNotification(n)
+              ? _config.onNotification!(n as ScrollEndNotification)
               : false;
         }
         Future.microtask(() {
@@ -139,11 +140,11 @@ class _ScrollNotification extends StatelessWidget {
             Future.delayed(Duration(milliseconds: 300), () {
               var result = _internalHit(context, _config);
               if (!result) {}
-            }).catchError((_) => {});
+            }).catchError((_) {});
           }
-        }).catchError((_) => {});
+        }).catchError((_) {});
         return _config.onNotification != null
-            ? _config.onNotification(n)
+            ? _config.onNotification!(n)
             : false;
       },
     );
@@ -162,12 +163,12 @@ class _ScrollNotification extends StatelessWidget {
     }
     try {
       var model = Provider.of<VideoPlayModel>(context, listen: false);
-      config.callback(targets, model);
+      config.callback?.call(targets, model);
     } catch (e) {}
     return targets.length > 0;
   }
 
-  T _getMeta<T>(BuildContext context, double x, double y, Predicate predicate,
+  T? _getMeta<T>(BuildContext context, double x, double y, Predicate predicate,
       double percentIn, int top) {
     var renderBox = context.findRenderObject() as RenderBox;
     var offset = renderBox.localToGlobal(Offset(x, y));
@@ -191,8 +192,8 @@ class _ScrollNotification extends StatelessWidget {
       if (d.child == invalidOne) {
         continue;
       }
-      var p = d.child.localToGlobal(Offset.zero);
-      if (p.dy + (1 - percentIn) * d.child.size.height - top < 0) {
+      var p = d.child!.localToGlobal(Offset.zero);
+      if (p.dy + (1 - percentIn) * d.child!.size.height - top < 0) {
         invalidOne = d.child;
         continue;
       }

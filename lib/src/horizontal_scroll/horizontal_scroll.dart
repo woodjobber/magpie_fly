@@ -12,9 +12,9 @@ enum FooterViewShowStyle {
 
 class HorizontalScrollView extends StatefulWidget {
   HorizontalScrollView(
-      {this.footerView, //footerview可用定义好的，也可自定义
+      {required this.footerView, //footerview可用定义好的，也可自定义
       this.itemMargin = const EdgeInsets.all(0),
-      this.itembuilder,
+      required this.itembuilder,
       this.itemCount = 0,
       this.footerWidth = 0,
       this.width,
@@ -30,16 +30,16 @@ class HorizontalScrollView extends StatefulWidget {
   final FooterViewShowStyle footerShowStyle;
   final bool footViewFlowScrollAlways; //footerview滑动到它的宽度之后，是否还跟着scrollview滑动
   final double footerWidth;
-  final double height;
-  final double width;
-  final VoidCallback onFooterLoadingCallBack;
+  final double? height;
+  final double? width;
+  final VoidCallback? onFooterLoadingCallBack;
 
   @override
   State<StatefulWidget> createState() => _HorizontalScrollViewState();
 }
 
 class _HorizontalScrollViewState extends State<HorizontalScrollView> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
   double _fotterViewRight = 0;
 
   @override
@@ -78,7 +78,7 @@ class _HorizontalScrollViewState extends State<HorizontalScrollView> {
       }
       footerViewRight = footerViewRight.toDouble();
       if (_fotterViewRight != footerViewRight) {
-        _fotterViewRight = footerViewRight;
+        _fotterViewRight = footerViewRight.toDouble();
         _fresh = true;
       }
     } else if (_fotterViewRight != -widget.footerWidth) {
@@ -94,20 +94,19 @@ class _HorizontalScrollViewState extends State<HorizontalScrollView> {
     }
   }
 
-  void _onPointerUp(){
+  void _onPointerUp() {
     var outRangeOffset = _scrollController.position.pixels -
         _scrollController.position.maxScrollExtent +
         _showFooterWidth();
-    if(widget.onFooterLoadingCallBack != null){
-      if(outRangeOffset > _showFooterWidth() + widget.footerWidth/2){
-        widget.onFooterLoadingCallBack();
+    if (widget.onFooterLoadingCallBack != null) {
+      if (outRangeOffset > _showFooterWidth() + widget.footerWidth / 2) {
+        widget.onFooterLoadingCallBack!();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       width: widget.width ?? MediaQuery.of(context).size.width,
       height: widget.height ?? 0,
@@ -120,29 +119,33 @@ class _HorizontalScrollViewState extends State<HorizontalScrollView> {
             child: widget.footerView ?? Text(''),
           ),
           Listener(
-            onPointerCancel: (event){_onPointerUp();},
-            onPointerUp: (event){_onPointerUp();},
+            onPointerCancel: (event) {
+              _onPointerUp();
+            },
+            onPointerUp: (event) {
+              _onPointerUp();
+            },
             child: CustomScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: BouncingScrollPhysics(),
-            slivers: <Widget>[
-              SliverList(
-                delegate: SliverChildListDelegate(
-                    List.generate(widget.itemCount, (index) {
-                  return Container(
-                    margin: widget.itemMargin,
-                    child: widget.itembuilder(context, index) ?? Text(''),
-                  );
-                })),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  width: _showFooterWidth(), //假的footerview
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                      List.generate(widget.itemCount, (index) {
+                    return Container(
+                      margin: widget.itemMargin,
+                      child: widget.itembuilder(context, index) ?? Text(''),
+                    );
+                  })),
                 ),
-              )
-            ],
-          ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    width: _showFooterWidth(), //假的footerview
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),

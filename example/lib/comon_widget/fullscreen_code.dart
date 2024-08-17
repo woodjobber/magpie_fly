@@ -5,7 +5,7 @@ import '../util/syntax_highlighter.dart';
 class FullScreenCode extends StatelessWidget {
   final String code;
 
-  const FullScreenCode({Key key, this.code}) : super(key: key);
+  const FullScreenCode({Key? key, required this.code}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +36,9 @@ class FullScreenCode extends StatelessWidget {
             tooltip: "copy",
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: code));
-              key.currentState.showSnackBar(
-                  new SnackBar(content: new Text("已复制到粘贴板"),));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: new Text("已复制到粘贴板"),
+              ));
             },
             icon: Text("复制"),
           )

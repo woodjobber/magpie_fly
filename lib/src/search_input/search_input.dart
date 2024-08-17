@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 
 class SearchInput extends StatelessWidget {
   final Color borderColor;
-  final Color fillColor;
-  final String hintText;
+  final Color? fillColor;
+  final String? hintText;
   final double blurRadius;
   final double circleRadius;
-  final Color hintTextColor;
-  final Color prefixIconColor;
+  final Color? hintTextColor;
+  final Color? prefixIconColor;
   final bool isBorderShadow;
   final bool enabel;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onEditingComplete;
-  final ValueChanged<String> onSubmitted;
-  final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onSubmitted;
+  final TextEditingController? controller;
 
   SearchInput(
-      {Key key,
-      this.borderColor,
+      {Key? key,
+      required this.borderColor,
       this.fillColor = Colors.white,
       this.hintText,
       this.hintTextColor,
@@ -25,10 +25,10 @@ class SearchInput extends StatelessWidget {
       this.circleRadius = 10.0,
       this.isBorderShadow = true,
       this.prefixIconColor,
-      this.enabel,
+      this.enabel = false,
       this.controller,
       this.onChanged,
-      this.onEditingComplete, 
+      this.onEditingComplete,
       this.onSubmitted})
       : super(key: key);
 
@@ -51,7 +51,7 @@ class SearchInput extends StatelessWidget {
         onSubmitted: onSubmitted,
         decoration: InputDecoration(
             prefixIcon: Icon(Icons.search,
-                color: prefixIconColor ?? Theme.of(context).accentColor),
+                color: prefixIconColor ?? Theme.of(context).cardColor),
             border: _createBorder(),
             enabledBorder: _createBorder(),
             hintText: hintText,

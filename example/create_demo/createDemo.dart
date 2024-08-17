@@ -2,35 +2,31 @@ import 'dart:io';
 // import 'package:args/args.dart';
 import 'fileUtil.dart';
 
-
-Future<void> main(List<String> arguments) async{
-
+Future<void> main(List<String> arguments) async {
   // print('请输入Demo名称（限制英文，且数字不在第一位，如:test_widget）：');
   print('input your Demo name（eg:test_widget）：');
-  String name = stdin.readLineSync() ?? 'test_widget';  
+  String name = stdin.readLineSync() ?? 'test_widget';
   print('');
 
   print('input you component title：');
-  String title = stdin.readLineSync() ?? ''; 
+  String title = stdin.readLineSync() ?? '';
   print('');
 
-
   print('input you component description：');
-  String desc = stdin.readLineSync() ?? ''; 
+  String desc = stdin.readLineSync() ?? '';
   print('');
 
   print('您的demo在example/lib/demo/$name下，组件名称：$title，组件描述：$desc');
 
   var demoName = '$name';
-  var className =  underScore2CamelCase(name);
+  var className = underScore2CamelCase(name);
   var demoPath = 'lib/demo/$demoName';
   var stateName = '_${className}State';
   await createFile('lib/demo');
   await createFile(demoPath);
 
   //创建.dart文件
-  await writeContent2Path(demoPath, '${demoName}_demo.dart', 
-  """
+  await writeContent2Path(demoPath, '${demoName}_demo.dart', """
 import 'package:flutter/material.dart';
 
 class $className extends StatefulWidget {
@@ -50,8 +46,7 @@ class $stateName extends State<$className> {
 
 //创建rm文件
   var rmName = '$demoName.md';
-  await writeContent2Path(demoPath, rmName, 
-  """
+  await writeContent2Path(demoPath, rmName, """
 <!-- 这是只是一个例子 -->
 
 ## 简介
@@ -82,33 +77,26 @@ XXXXXXXXXXX
 | 参数 | 描述 |
 | --- | --- |
 
-  """
-  );
-
+  """);
 
 //写json
-  await writeContent2Path(demoPath, '.page.json', 
-  """
+  await writeContent2Path(demoPath, '.page.json', """
   {
     "name": "$name",
     "title": "$title",
     "desc": "$desc",
     "markdown": "$demoPath/$rmName"
   }
-  """
-  );
+  """);
 
 //写列表数据
-  buildList().then((list){
-    writeContent2Path('lib/demo', 'ListDatas.dart', 
-    """
+  buildList().then((list) {
+    writeContent2Path('lib/demo', 'ListDatas.dart', """
     //列表页数据
 
     List<Map<String, String>> DemolistDatas = $list;
-    """
-    );
+    """);
   });
-
 }
 
 Future<List> buildList() async {
@@ -120,16 +108,17 @@ Future<List> buildList() async {
   for (var file in files) {
     var isdir = FileSystemEntity.isDirectorySync(file.path);
     //文件夹
-    if(isdir){
+    if (isdir) {
       var subdirectory = Directory(file.path);
       List<FileSystemEntity> subfiles = subdirectory.listSync();
       for (var subFile in subfiles) {
         //取出md文件
-        if(FileSystemEntity.isFileSync(subFile.path) && subFile.path.endsWith('.page.json')){
+        if (FileSystemEntity.isFileSync(subFile.path) &&
+            subFile.path.endsWith('.page.json')) {
           var file = File(subFile.path);
           try {
-             String jsonstring = file.readAsStringSync();
-             list.add(jsonstring);
+            String jsonstring = file.readAsStringSync();
+            list.add(jsonstring);
           } catch (e) {
             print(e.toString());
           }
@@ -144,9 +133,7 @@ Future<List> buildList() async {
 String underScore2CamelCase(String key) {
   RegExp regex = new RegExp(r'[_]+(.)');
   String s = key.replaceAllMapped(regex, (m) {
-    return m.group(1).toUpperCase();
+    return m.group(1)?.toUpperCase() ?? '';
   });
   return '${s[0].toUpperCase()}${s.substring(1)}';
 }
-
-

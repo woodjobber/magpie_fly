@@ -13,32 +13,55 @@ class AppPage extends StatefulWidget {
 class AppPageState extends State<AppPage> {
   //数据
   static List tabDatas = [
-    {'title': '58公众号', 'icon':Image.asset('assets/images/tab_nomal1.png'), 'selectIcon':Image.asset('assets/images/tab_selected1.png')},
-    {'title': 'Widget', 'icon':Image.asset('assets/images/tab_nomal2.png'), 'selectIcon':Image.asset('assets/images/tab_selected2.png')},
-    {'title': '使用文档', 'icon':Image.asset('assets/images/tab_nomal3.png'), 'selectIcon':Image.asset('assets/images/tab_selected3.png')},
-    {'title': '贡献流程', 'icon':Image.asset('assets/images/tab_nomal4.png'), 'selectIcon':Image.asset('assets/images/tab_selected4.png')},
+    {
+      'title': '58公众号',
+      'icon': Image.asset('assets/images/tab_nomal1.png'),
+      'selectIcon': Image.asset('assets/images/tab_selected1.png')
+    },
+    {
+      'title': 'Widget',
+      'icon': Image.asset('assets/images/tab_nomal2.png'),
+      'selectIcon': Image.asset('assets/images/tab_selected2.png')
+    },
+    {
+      'title': '使用文档',
+      'icon': Image.asset('assets/images/tab_nomal3.png'),
+      'selectIcon': Image.asset('assets/images/tab_selected3.png')
+    },
+    {
+      'title': '贡献流程',
+      'icon': Image.asset('assets/images/tab_nomal4.png'),
+      'selectIcon': Image.asset('assets/images/tab_selected4.png')
+    },
   ];
 
-  List<Widget> _pages = List();
+  List<Widget> _pages = [];
   List<BottomNavigationBarItem> _tabs = [];
   var _currentIndex = 0;
   var _currentTitle = tabDatas[0]['title'];
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
-  
+
   @override
   void initState() {
     super.initState();
 
     //页面列表
-    _pages..add(NewsPage(_currentTitle))..add(ListPage())..add(MarkDownDoc(mdPath: 'doc/magpie_ui.md',))..add(MarkDownDoc(mdPath: 'doc/contribution.md',));
+    _pages
+      ..add(NewsPage(_currentTitle))
+      ..add(ListPage())
+      ..add(MarkDownDoc(
+        mdPath: 'doc/magpie_ui.md',
+      ))
+      ..add(MarkDownDoc(
+        mdPath: 'doc/contribution.md',
+      ));
 
     //tab列表
     tabDatas.forEach((map) {
       _tabs.add(BottomNavigationBarItem(
-        title: Text(map['title'], style: TextStyle(fontSize: 10),),
-        icon:map['icon'],
-        activeIcon: map['selectIcon']
-      ));
+          label: map['title'],
+          icon: map['icon'],
+          activeIcon: map['selectIcon']));
     });
   }
 
@@ -47,11 +70,11 @@ class AppPageState extends State<AppPage> {
     flutterWebviewPlugin.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _currentIndex==0?null:AppBar(title: Text(_currentTitle)),
+      appBar: _currentIndex == 0 ? null : AppBar(title: Text(_currentTitle)),
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
@@ -61,7 +84,7 @@ class AppPageState extends State<AppPage> {
         currentIndex: _currentIndex,
         onTap: tabClick,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize:16,
+        selectedFontSize: 16,
         unselectedFontSize: 14,
       ),
     );
@@ -71,9 +94,9 @@ class AppPageState extends State<AppPage> {
     setState(() {
       _currentIndex = index;
       _currentTitle = tabDatas[index]['title'];
-      if(_currentIndex != 0){
+      if (_currentIndex != 0) {
         flutterWebviewPlugin.hide();
-      }else{
+      } else {
         flutterWebviewPlugin.show();
       }
     });

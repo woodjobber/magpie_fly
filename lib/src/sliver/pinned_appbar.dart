@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PinnedAppBar extends StatelessWidget {
   final PreferredSizeWidget child;
-  final Color color;
+  final Color? color;
 
-  const PinnedAppBar({Key key, this.child, this.color}) : super(key: key);
+  const PinnedAppBar({Key? key, required this.child, this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this._tabBar, this.color);
 
   final PreferredSizeWidget _tabBar;
-  final Color color;
+  final Color? color;
 
   @override
   double get minExtent => _tabBar.preferredSize.height;

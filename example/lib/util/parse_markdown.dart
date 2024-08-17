@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 Future<List> parseMarkdown(String filepath) async {
   try {
     String content = await rootBundle.loadString(filepath);
-    if(content.length == 0) return [];
+    if (content.length == 0) return [];
     //根据换行符号截取字符串为数组
     List<String> list = content.split(RegExp(r'\r?\n'));
 
@@ -20,7 +20,8 @@ Future<List> parseMarkdown(String filepath) async {
         String ss = s.substring(1, s.length - 1);
         Map map = json.decode(ss);
         var needAppBar = map['appbar'] ?? true;
-        widgetlist.add(Model(demo: map['demo'],
+        widgetlist.add(Model(
+            demo: map['demo'],
             code: map['code'] ?? true,
             jump: map['jump'] ?? false,
             needAppbar: needAppBar));
@@ -32,18 +33,22 @@ Future<List> parseMarkdown(String filepath) async {
     return widgetlist;
   } catch (e) {
     print(e.toString());
-    return null;
+    return [];
   }
 }
 
 class Model {
   String demo; //demo文件地址
-  bool code = true;  //是否显示代码，默认显示
-  bool jump = false;  //是否跳界面显示效果
+  bool code = true; //是否显示代码，默认显示
+  bool jump = false; //是否跳界面显示效果
   bool needAppbar = true;
-  Model({this.demo, this.code = true, this.jump = false, this.needAppbar = true});
+  Model(
+      {this.demo = '',
+      this.code = true,
+      this.jump = false,
+      this.needAppbar = true});
 
-  bool get isJump => jump ?? false;
+  bool get isJump => jump;
 
   String get className {
     String last = demo.split("/").last;

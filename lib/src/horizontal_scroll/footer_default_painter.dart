@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 
 class TopicFooterPainter extends CustomPainter {
   TopicFooterPainter(
-      {this.text,
+      {required this.text,
       this.arcWidth = 0,
       this.rectWidth = 0,
       this.startDrawX = 0,
@@ -16,17 +16,17 @@ class TopicFooterPainter extends CustomPainter {
   double rectWidth; //矩形的size
   double startDrawX; //开始绘制的x坐标
   String text; //需要绘制的text
-  TextStyle textStyle;
-  Color paintColor; //画笔颜色
+  TextStyle? textStyle;
+  late Color? paintColor; //画笔颜色
   Paint dPaint = Paint(); //画笔
-  Path _arcPath; //画圆弧的path
+  late Path _arcPath; //画圆弧的path
 
   @override
   void paint(Canvas canvas, Size size) {
     //给画笔设置属性
     dPaint
       ..color =
-          paintColor == null ? Color.fromRGBO(237, 239, 241, 1) : paintColor
+          (paintColor == null ? Color.fromRGBO(237, 239, 241, 1) : paintColor)!
       ..style = PaintingStyle.fill
       ..strokeWidth = 3;
 

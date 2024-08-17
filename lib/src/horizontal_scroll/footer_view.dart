@@ -7,11 +7,11 @@ abstract class FootBaseView {
   void onScrollUpdate(ScrollController scrollController, double outRangeOffset){}
 }
 
-_FooterDefaultViewState _state;
+late _FooterDefaultViewState? _state;
 //默认的footerview
 class FooterDefaultView extends StatefulWidget implements FootBaseView{
 
-  FooterDefaultView({@required this.height, this.width = 70});
+  FooterDefaultView({required this.height, this.width = 70});
   
   final double width;
   final double height;
@@ -19,20 +19,20 @@ class FooterDefaultView extends StatefulWidget implements FootBaseView{
   @override
   State<StatefulWidget> createState() {
     _state = _FooterDefaultViewState();
-    return _state;
+    return _state!;
   }
 
   @override
   void onScrollUpdate(ScrollController scrollController, double outRangeOffset) {
     if(_state != null) {
-      _state.onScrollUpdate(scrollController, outRangeOffset);
+      _state!.onScrollUpdate(scrollController, outRangeOffset);
     }
   }
 }
 
 class _FooterDefaultViewState extends State<FooterDefaultView>{
 
-  TopicFooterPainter _footerPainter;
+  late TopicFooterPainter _footerPainter;
 
   @override
   void dispose() {
@@ -80,7 +80,7 @@ class _FooterDefaultViewState extends State<FooterDefaultView>{
 
 //直接显示text的footerview
 class FooterTextView extends StatelessWidget implements FootBaseView{
-  FooterTextView({@required this.height, this.width = 70, this.text = '加载中...'});
+  FooterTextView({required this.height, this.width = 70, this.text = '加载中...'});
   
   final double width;
   final double height;

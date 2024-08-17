@@ -17,9 +17,9 @@ class MetaConsumer<T> extends StatelessWidget {
       BuildContext context, VideoPlayModel model, Widget child) builder;
 
   MetaConsumer({
-    @required this.index,
-    @required this.data,
-    @required this.builder,
+    required this.index,
+    required this.data,
+    required this.builder,
   });
 
   @override
@@ -28,7 +28,7 @@ class MetaConsumer<T> extends StatelessWidget {
       builder: (context, model, child) {
         return MetaData(
           metaData: VideoMeta("$data", index),
-          child: builder(context, model, child),
+          child: builder(context, model, child ?? Container()),
         );
       },
     );

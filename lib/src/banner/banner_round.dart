@@ -9,7 +9,7 @@ typedef OnBannerClickListener = void Function(int index, dynamic itemData);
 class BannerWidget extends StatefulWidget {
   final List data;
   final BuildShowView buildShowView;
-  final OnBannerClickListener onBannerClickListener;
+  final OnBannerClickListener? onBannerClickListener;
   final int delayTime;
   final int scrollTime;
   final double height;
@@ -21,9 +21,9 @@ class BannerWidget extends StatefulWidget {
   final double indicatorBottom;
 
   BannerWidget(
-      {Key key,
-      @required this.data,
-      @required this.buildShowView,
+      {Key? key,
+      required this.data,
+      required this.buildShowView,
       this.delayTime = 3, //延迟轮播时间
       this.scrollTime = 200, //单次轮播时间
       this.onBannerClickListener, //点击回调
@@ -47,7 +47,7 @@ class BannerState extends State<BannerWidget> {
   final PageController pageController =
       PageController(initialPage: IntegerMax ~/ 2);
 
-  Timer timer;
+  Timer? timer;
   int _curIndex = 0;
 
   @override
@@ -84,7 +84,7 @@ class BannerState extends State<BannerWidget> {
   }
 
   void clearTimer() {
-    timer.cancel();
+    timer?.cancel();
     timer = null;
   }
 
@@ -92,7 +92,7 @@ class BannerState extends State<BannerWidget> {
     timer = Timer.periodic(Duration(seconds: widget.delayTime), (Timer timer) {
 //      var i = getPosition() + 1;
       //print("88888:" + getPosition().toString());
-      pageController.animateToPage(pageController.page.toInt() + 1,
+      pageController.animateToPage(pageController.page?.toInt() ?? 0 + 1,
           duration: Duration(milliseconds: widget.scrollTime),
           curve: Curves.linear);
     });
@@ -106,8 +106,8 @@ class BannerState extends State<BannerWidget> {
           ? null
           : GestureDetector(
               onTap: () {
-                widget.onBannerClickListener(
-                    getPosition(), widget.data[getPosition()]);
+                widget.onBannerClickListener
+                    ?.call(getPosition(), widget.data[getPosition()]);
               },
               child: PageView.builder(
                   controller: pageController,
@@ -137,15 +137,15 @@ class BannerState extends State<BannerWidget> {
 
 class _InheritedWidget extends InheritedWidget {
   _InheritedWidget({
-    Key key,
-    @required Widget child,
-    @required this.position,
+    Key? key,
+    required Widget child,
+    required this.position,
   }) : super(key: key, child: child);
 
   final int position;
 
-  static _InheritedWidget of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(_InheritedWidget);
+  static _InheritedWidget? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_InheritedWidget>();
   }
 
   @override
@@ -166,7 +166,7 @@ class IndicatorView extends StatefulWidget {
   //final int position;
 
   const IndicatorView({
-    Key key,
+    Key? key,
     this.indicatorSelectColor = Colors.white,
     this.indicatorColor = Colors.grey,
     this.indicatorRadius = 5,
@@ -189,7 +189,7 @@ class IndicatorState extends State<IndicatorView> {
   }
 
   Widget initIndicator(BuildContext context) {
-    double dindicatorRight;
+    double dindicatorRight = 0;
     if (widget.indicatorRight != 0) {
       dindicatorRight = widget.indicatorRight;
     }
@@ -212,7 +212,7 @@ class IndicatorState extends State<IndicatorView> {
           child: Container(
             width: widget.indicatorRadius,
             height: widget.indicatorRadius,
-            color: i == _InheritedWidget.of(context).position
+            color: i == _InheritedWidget.of(context)?.position
                 ? widget.indicatorSelectColor
                 : widget.indicatorColor,
           ),

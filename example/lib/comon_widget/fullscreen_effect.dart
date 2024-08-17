@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FullScreenEffect extends StatelessWidget {
-  final Model model;
+  final Model? model;
 
-  const FullScreenEffect({Key key, this.model}) : super(key: key);
+  const FullScreenEffect({Key? key, this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,27 +15,29 @@ class FullScreenEffect extends StatelessWidget {
       IconButton(
         tooltip: "source",
         onPressed: () {
-          rootBundle.loadString(model.demo).then((value) {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => FullScreenCode(code: value)));
+          rootBundle.loadString(model?.demo ?? '').then((value) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FullScreenCode(code: value)));
           });
         },
         icon: Icon(Icons.code),
       )
     ];
 
-    if (model.needAppbar) {
+    if (model?.needAppbar ?? false) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(model.className),
+          title: Text(model!.className),
           actions: actions,
         ),
         body: Container(
           alignment: Alignment.center,
-          child: markdownPathToWidget[model.demo](),
+          child: markdownPathToWidget[model?.demo]!(),
         ),
       );
     }
-    return markdownPathToWidget[model.demo]();
+    return markdownPathToWidget[model!.demo]!();
   }
 }

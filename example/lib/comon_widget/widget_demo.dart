@@ -9,13 +9,13 @@ class WidgetDemo extends StatefulWidget {
   final List<dynamic> contentList;
   final String docUrl;
   final String codeUrl;
-  final Widget bottomNaviBar;
+  final Widget? bottomNaviBar;
 
   WidgetDemo(
-      {Key key,
-      @required this.contentList,
-      this.codeUrl,
-      this.docUrl,
+      {Key? key,
+      required this.contentList,
+      this.codeUrl = '',
+      this.docUrl = '',
       this.bottomNaviBar})
       : super(key: key);
 
@@ -33,7 +33,8 @@ class _WidgetDemoState extends State<WidgetDemo> {
     ];
     widget.contentList.forEach((item) {
       if (item.runtimeType == String) {
-        _list.add(Container(alignment: Alignment.centerLeft, child: MarkdownBody(data: item)));
+        _list.add(Container(
+            alignment: Alignment.centerLeft, child: MarkdownBody(data: item)));
         _list.add(
           SizedBox(
             height: 20.0,

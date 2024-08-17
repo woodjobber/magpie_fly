@@ -17,9 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'UI Widget',
       theme: ThemeData(
-        // primarySwatch: Colors.deepOrange
-        primaryColor: Color(0xff0B69F0)
-      ),
+          // primarySwatch: Colors.deepOrange
+          primaryColor: Color(0xff0B69F0)),
       home: AppPage(),
     );
   }
